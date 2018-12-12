@@ -31,6 +31,33 @@ def chConverter(file_):
     #     for point in data:
     #         tempfile.write(str(point) + "\n")
 
+def findPeaks(xdata, ydata, peakwidth=300):
+    # TODO: iplement collections.deque() class for window shifting...
+    # returns a list of tuples with each tuple containing (x, y) values
+    peakpoints = []
+    max_iters = 0
+    inc_run = 0
+    local_max = (xdata[0], ydata[0])
+    for i in range(1, len(ydata)):
+        if ydata[i] > local_max[1]:
+            local_max = (xdata[i], ydata[i])
+            max_iters = 0
+            inc_run = 0
+        elif ydata[i] <= local_max[1]:
+            max_iters += 1
+        if ydata[i] > ydata[i - 1]:
+            inc_run += 1
+
+        if max_iters > peakwidth and inc_run > peakwidth:
+            if not (local_max[1] < 0):
+                peakpoints[0].append(local_max[0])
+                peakpoints[1].append(local_max[1])
+            local_max = (xdata[i], ydata[i])
+            max_iters = 0
+            inc_run = 0
+    return peakpoints
+
+
 def makeGraph(pic_name, xdata, ydata, title, xlab, ylab):
     # print(xdata)
 
